@@ -1,14 +1,16 @@
 before:
   hooks:
-    - go mod tidy
+  - go mod tidy
 builds:
   - env:
       - CGO_ENABLED=0
     goos:
       - windows
+    goarch:
+    - amd64
+
 archives:
-  - replacements:
-      windows: win32
+  - name_template: '{{ .ProjectName }}-{{ .Tag }}-{{ .Os }}-{{ replace .Os "windows" "win32" }}'  # Use name_template with replace functionality
 checksum:
   name_template: 'checksums.txt'
 snapshot:
