@@ -69,7 +69,7 @@ func run() error {
 
 	minioOptions := &minio.Options{
 		Creds:  credentials.NewStaticV4(*bucketKeyID, *bucketKey, ""),
-		Secure: true,
+		Secure: false,
 	}
 
 	minioClient, err := minio.New(*bucketEndpoint, minioOptions)
