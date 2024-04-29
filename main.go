@@ -136,7 +136,7 @@ func run() error {
 				suffix = ".xz"
 			}
 
-			objectKey := fmt.Sprintf("%x/%x/%x%v", s256[0:1], s256[1:2], s256, suffix)
+			objectKey := fmt.Sprintf("updates/%x/%x/%x%v", s256[0:1], s256[1:2], s256, suffix)
 
 			remoteInfo, err := minioClient.StatObject(cxt, *bucketName, objectKey, minio.StatObjectOptions{})
 
@@ -274,7 +274,7 @@ func run() error {
 	}
 
 	{
-		_, err = minioClient.PutObject(cxt, *bucketName, fmt.Sprintf("tags/%v/%v/%v", *cacheName, *branchName, *branchVersion), bytes.NewReader([]byte(*branchVersion)), -1, minio.PutObjectOptions{
+		_, err = minioClient.PutObject(cxt, *bucketName, fmt.Sprintf("updates/tags/%v/%v/%v", *cacheName, *branchName, *branchVersion), bytes.NewReader([]byte(*branchVersion)), -1, minio.PutObjectOptions{
 			UserMetadata: map[string]string{
 				"branch-version":    *branchVersion,
 				"branch-manifest":   manifestHash,
@@ -290,7 +290,7 @@ func run() error {
 	}
 
 	{
-		_, err = minioClient.PutObject(cxt, *bucketName, fmt.Sprintf("heads/%v/%v", *cacheName, *branchName), bytes.NewReader([]byte(*branchVersion)), -1, minio.PutObjectOptions{
+		_, err = minioClient.PutObject(cxt, *bucketName, fmt.Sprintf("updates/heads/%v/%v", *cacheName, *branchName), bytes.NewReader([]byte(*branchVersion)), -1, minio.PutObjectOptions{
 			UserMetadata: map[string]string{
 				"branch-version":    *branchVersion,
 				"branch-manifest":   manifestHash,
