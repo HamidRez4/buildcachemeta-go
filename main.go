@@ -259,7 +259,7 @@ func run() error {
 		manifestHash = fmt.Sprintf("%x", s256)
 		f := bytes.NewReader([]byte(xmlData))
 
-		objectKey := fmt.Sprintf("%x/%x/%x", s256[0:1], s256[1:2], s256)
+		objectKey := fmt.Sprintf("updates/%x/%x/%x", s256[0:1], s256[1:2], s256)
 
 		_, err = minioClient.PutObject(cxt, *bucketName, objectKey, f, -1, minio.PutObjectOptions{
 			ContentType: "application/octet-stream",
