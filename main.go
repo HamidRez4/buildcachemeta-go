@@ -153,8 +153,7 @@ func run() error {
 			if !exists {
 				// Sign the file if it's new
 				ext := strings.ToLower(filepath.Ext(fpath))
-				dir := strings.ReplaceAll(filepath.Dir(fpath), "\\", "/")
-				if !strings.Contains(dir, "/bin") && !strings.Contains(dir, "/citizen") && (ext == ".dll" || ext == ".exe" || ext == ".bin") {
+				if !strings.Contains(fpath, "\\bin\\") && !strings.Contains(fpath, "\\citizen\\") && (ext == ".dll" || ext == ".exe" || ext == ".bin") {
 					cmd := exec.Command("signtool.exe", "sign", "/sha1", "E1F0B6103CDF3C05DFB67CCFC2EC1A04405836F3", "/tr", "http://time.certum.pl", "/td", "sha256", "/fd", "sha256", fpath)
 					if err := cmd.Run(); err != nil {
 						return fmt.Errorf("failed to sign %s: %w", fpath, err)
