@@ -105,6 +105,19 @@ func run() error {
 
 			defer f.Close()
 
+			ext := strings.ToLower(filepath.Ext(fpath))
+			if *branchName == "production" && !strings.Contains(fpath, "\\bin\\") && !strings.Contains(fpath, "\\citizen\\") && !strings.Contains(fpath, "\\mods\\") && (ext == ".dll" || ext == ".exe" || ext == ".bin") {
+				// Check if the file is already signed
+				verifyCmd := exec.Command("signtool.exe", "verify", "/pa", fpath)
+				if err := verifyCmd.Run(); err != nil {
+					// If the file is not signed, sign it
+					cmd := exec.Command("signtool.exe", "sign", "/sha1", "E1F0B6103CDF3C05DFB67CCFC2EC1A04405836F3", "/tr", "http://time.certum.pl", "/td", "sha256", "/fd", "sha256", fpath)
+					if err := cmd.Run(); err != nil {
+						return fmt.Errorf("failed to sign %s: %w", fpath, err)
+					}
+				}
+			}
+
 			h1 := sha1.New()
 			if _, err := io.Copy(h1, f); err != nil {
 				return err
@@ -152,14 +165,6 @@ func run() error {
 
 			if !exists {
 				// Sign the file if it's new
-				ext := strings.ToLower(filepath.Ext(fpath))
-				if *branchName == "production" && !strings.Contains(fpath, "\\bin\\") && !strings.Contains(fpath, "\\citizen\\") && !strings.Contains(fpath, "\\mods\\") && (ext == ".dll" || ext == ".exe" || ext == ".bin") {
-					cmd := exec.Command("signtool.exe", "sign", "/sha1", "E1F0B6103CDF3C05DFB67CCFC2EC1A04405836F3", "/tr", "http://time.certum.pl", "/td", "sha256", "/fd", "sha256", fpath)
-					if err := cmd.Run(); err != nil {
-						return fmt.Errorf("failed to sign %s: %w", fpath, err)
-					}
-				}
-
 				spath := fpath
 
 				if compressed {
